@@ -1,7 +1,20 @@
-import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
+import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.30-alpha/deno-dom-wasm.ts";
 
-function handler(_req: Request): Response {
-  return new Response("Hello, World");
-}
+const URL = "https://www.etsy.com/listing/1177156178";
 
-serve(handler);
+setInterval(async () => {
+  const goblinPotteryCrockHtmlString = await fetch(URL).then((response) =>
+    response.text()
+  );
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(goblinPotteryCrockHtmlString, "text/html");
+
+  const message = doc?.querySelector(".wt-text-body-01")?.innerText;
+
+  if (message?.includes("Sorry")) {
+    console.log("Item is out of stock!");
+  } else {
+    console.log("Item is in stock!");
+  }
+}, 1000 * 30);
