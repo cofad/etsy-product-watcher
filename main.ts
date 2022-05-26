@@ -17,4 +17,4 @@ setInterval(async () => {
   } else {
     console.log("Item is in stock!");
   }
-}, 1000 * 30);
+}, 1000 * 60 * 15);
