@@ -34,7 +34,7 @@ setInterval(async () => {
       `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
     );
   }
-}, 1000 * 60 * 60);
+}, 1000 * 5);
 
 async function sendEmail(
   subject: string,
