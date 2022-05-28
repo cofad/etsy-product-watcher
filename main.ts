@@ -54,7 +54,7 @@ async function isItemInStock(url: string): Promise<boolean> {
     throw new Error("Error retrieveing status from Etsy!");
   }
 
-  return message.includes("Sorry");
+  return !message.includes("Sorry");
 }
 
 async function sendEmail(
