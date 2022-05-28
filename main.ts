@@ -1,7 +1,7 @@
 import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.30-alpha/deno-dom-wasm.ts";
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
-import { app, get } from "https://denopkg.com/syumai/dinatra/mod.ts";
+import { app, get } from "https://denopkg.com/syumai/dinatra@master/mod.ts";
 
 const URL = "https://www.etsy.com/listing/1177156178";
 
