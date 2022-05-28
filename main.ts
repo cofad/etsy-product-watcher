@@ -8,33 +8,54 @@ const URL = "https://www.etsy.com/listing/1177156178";
 console.log("Etsy Product Watcher started!");
 
 app(
-  get("/", () => "<h1>Hello From Deno on Fly!</h1>"),
+  get("/", async () => {
+    if (await isItemInStock(URL)) {
+      await sendEmail(
+        "In Stock",
+        `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
+      );
+
+      return "In stock";
+    } else {
+      await sendEmail(
+        "Out of Stock :(",
+        `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
+      );
+
+      return "Out of stock";
+    }
+  }),
 );
 
 setInterval(async () => {
-  const goblinPotteryCrockHtmlString = await fetch(URL).then((response) =>
+  if (await isItemInStock(URL)) {
+    await sendEmail(
+      "In Stock",
+      `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
+    );
+  } else {
+    await sendEmail(
+      "Out of Stock :(",
+      `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
+    );
+  }
+}, 1000 * 60 * 60);
+
+async function isItemInStock(url: string): Promise<boolean> {
+  const goblinPotteryCrockHtmlString = await fetch(url).then((response) =>
     response.text()
   );
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(goblinPotteryCrockHtmlString, "text/html");
-
   const message = doc?.querySelector(".wt-text-body-01")?.innerText;
 
-  if (message?.includes("Sorry")) {
-    await sendEmail(
-      "Out of Stock :(",
-      `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
-    );
-
-    console.log("Item is out of stock!");
-  } else {
-    await sendEmail(
-      "In Stock",
-      `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
-    );
+  if (message === undefined) {
+    throw new Error("Error retrieveing status from Etsy!");
   }
-}, 1000 * 60 * 60);
+
+  return message.includes("Sorry");
+}
 
 async function sendEmail(
   subject: string,
