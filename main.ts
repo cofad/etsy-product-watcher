@@ -1,9 +1,15 @@
 import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.30-alpha/deno-dom-wasm.ts";
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
+import { app, get } from "https://denopkg.com/syumai/dinatra/mod.ts";
+
 const URL = "https://www.etsy.com/listing/1177156178";
 
 console.log("Etsy Product Watcher started!");
+
+app(
+  get("/", () => "<h1>Hello From Deno on Fly!</h1>"),
+);
 
 setInterval(async () => {
   const goblinPotteryCrockHtmlString = await fetch(URL).then((response) =>
