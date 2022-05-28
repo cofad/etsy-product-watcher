@@ -3,6 +3,8 @@ import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const URL = "https://www.etsy.com/listing/1177156178";
 
+console.log("Etsy Product Watcher started!");
+
 setInterval(async () => {
   const goblinPotteryCrockHtmlString = await fetch(URL).then((response) =>
     response.text()
