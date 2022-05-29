@@ -1,6 +1,7 @@
-# Etsy Product Watcher
+# Product Watcher
 
-A program that will check Etsy and send an email if a specific product is available.
+A program that will check for products and send an email if a specific product
+is available.
 
 ## Run
 
@@ -11,4 +12,4 @@ A program that will check Etsy and send an email if a specific product is availa
 ## Deploy to fly.io
 
 1. Push to `main`
-1. Navigate to https://etsy-product-watcher.fly.dev
+1. Navigate to https://product-watcher.fly.dev
