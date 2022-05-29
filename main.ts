@@ -7,8 +7,6 @@ const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 
 console.log("Etsy Product Watcher started!");
 
-console.log(GMAIL_PASSWORD);
-
 app(
   get("/", async () => {
     if (await isItemInStock(URL)) {
