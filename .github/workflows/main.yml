@@ -9,6 +9,6 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        # - run: flyctl secrets unset GMAIL_PASSWORD
+        - run: flyctl secrets unset GMAIL_PASSWORD
         - run: flyctl secrets set GMAIL_PASSWORD=${{ secrets.GMAIL_PASSWORD }}
         - run: flyctl deploy --remote-only
