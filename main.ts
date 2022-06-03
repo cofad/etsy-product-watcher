@@ -1,37 +1,9 @@
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 import { app, get } from "https://denopkg.com/syumai/dinatra@master/mod.ts";
+import { EtsyApiConfig, EtsyListingState } from "./etsy.model.ts";
 
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 const GOBLIN_POTTERY_CROCK_LISTING_ID = "1177156178";
-
-interface EtsyApiConfig {
-  baseUrl: string;
-  apiKey: string | undefined;
-}
-
-enum EtsyListingState {
-  ACTIVE = "active",
-  REMOVED = "removed",
-  SOLD_OUT = "sold_out",
-  EXPIRED = "expired",
-  ALCHEMY = "alchemy",
-  EDIT = "edit",
-  DRAFT = "draft",
-  CREATE = "create",
-  PRIVATE = "private",
-  UNAVAILABLE = "unavailable",
-}
-
-interface EtsyListing {
-  state: EtsyListingState;
-}
-
-interface EtsyApiResponse<T> {
-  count: number;
-  results: T[];
-  params: { [key: string]: string };
-  type: string;
-}
 
 const etsyApiConfig: EtsyApiConfig = {
   baseUrl: "https://openapi.etsy.com/v2/",
