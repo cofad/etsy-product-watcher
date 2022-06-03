@@ -1,60 +1,58 @@
-import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.30-alpha/deno-dom-wasm.ts";
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 import { app, get } from "https://denopkg.com/syumai/dinatra@master/mod.ts";
 
-const URL = "https://www.etsy.com/listing/1177156178";
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
+const GOBLIN_POTTERY_CROCK_LISTING_ID = "1177156178";
+
+interface EtsyApiConfig {
+  baseUrl: string;
+  apiKey: string | undefined;
+}
+
+enum EtsyListingState {
+  ACTIVE = "active",
+  REMOVED = "removed",
+  SOLD_OUT = "sold_out",
+  EXPIRED = "expired",
+  ALCHEMY = "alchemy",
+  EDIT = "edit",
+  DRAFT = "draft",
+  CREATE = "create",
+  PRIVATE = "private",
+  UNAVAILABLE = "unavailable",
+}
+
+interface EtsyListing {
+  state: EtsyListingState;
+}
+
+interface EtsyApiResponse<T> {
+  count: number;
+  results: T[];
+  params: { [key: string]: string };
+  type: string;
+}
+
+const etsyApiConfig: EtsyApiConfig = {
+  baseUrl: "https://openapi.etsy.com/v2/",
+  apiKey: Deno.env.get("ETSY_API_KEY"),
+};
 
 console.log("Etsy Product Watcher started!");
 
 app(
-  get("/", async () => {
-    if (await isItemInStock(URL)) {
-      await sendEmail(
-        "In Stock",
-        `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
-      );
-
-      return "In stock";
-    } else {
-      await sendEmail(
-        "Out of Stock :(",
-        `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
-      );
-
-      return "Out of stock";
-    }
-  }),
+  get("/", async () => (await isEtsyItemInStock(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig)).toString()),
 );
 
-setInterval(async () => {
-  if (await isItemInStock(URL)) {
-    await sendEmail(
-      "In Stock",
-      `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
-    );
-  } else {
-    await sendEmail(
-      "Out of Stock :(",
-      `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
-    );
-  }
-}, 1000 * 60 * 60);
+setInterval(() => {
+  checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
+}, 1000 * 60 * 60 * 12);
 
-async function isItemInStock(url: string): Promise<boolean> {
-  const goblinPotteryCrockHtmlString = await fetch(url).then((response) =>
-    response.text()
-  );
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(goblinPotteryCrockHtmlString, "text/html");
-  const message = doc?.querySelector(".wt-text-body-01")?.innerText;
-
-  if (message === undefined) {
-    throw new Error("Error retrieveing status from Etsy!");
-  }
-
-  return !message.includes("Sorry");
+async function isEtsyItemInStock(id: string, etsyApiConfig: EtsyApiConfig): Promise<boolean> {
+  const etsyListingUrl = `${etsyApiConfig.baseUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
+  const response = await fetch(etsyListingUrl);
+  const json = await response.json();
+  return json.results[0].state === EtsyListingState.ACTIVE;
 }
 
 async function sendEmail(
@@ -77,4 +75,24 @@ async function sendEmail(
     content: "",
     html,
   });
+}
+
+async function checkStatusAndSendEmail(listingId: string, etsyApiConfig: EtsyApiConfig) {
+  if (await isEtsyItemInStock(listingId, etsyApiConfig)) {
+    await sendEmail(
+      "In Stock",
+      `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
+    );
+
+    console.log("In stock");
+    return "In stock";
+  } else {
+    await sendEmail(
+      "Out of Stock :(",
+      `Item is out of stock <a href=${URL}>1 Gal. White Crock</a>`,
+    );
+
+    console.log("Out of stock");
+    return "Out of stock";
+  }
 }
