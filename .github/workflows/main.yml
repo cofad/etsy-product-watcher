@@ -11,4 +11,5 @@ jobs:
         - uses: superfly/flyctl-actions/setup-flyctl@master
         # - run: flyctl secrets unset GMAIL_PASSWORD
         - run: flyctl secrets set GMAIL_PASSWORD=${{ secrets.GMAIL_PASSWORD }}
+        - run: flyctl secrets set ETSY_API_KEY=${{ secrets.ETSY_API_KEY }}
         - run: flyctl deploy --remote-only
