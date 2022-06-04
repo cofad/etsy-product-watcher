@@ -1,6 +1,7 @@
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 import { app, get } from "https://denopkg.com/syumai/dinatra@master/mod.ts";
 import { EtsyApiConfig, EtsyListingState } from "./etsy.model.ts";
+import { getMillisTill, TIME_CONSTANTS } from "./time.ts";
 
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 const GOBLIN_POTTERY_CROCK_LISTING_ID = "1177156178";
@@ -16,9 +17,11 @@ app(
   get("/", async () => (await isEtsyItemInStock(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig)).toString()),
 );
 
-setInterval(() => {
-  checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
-}, 1000 * 60 * 60 * 12);
+setTimeout(() => {
+  setInterval(() => {
+    checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
+  }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
+}, getMillisTill(6));
 
 async function isEtsyItemInStock(id: string, etsyApiConfig: EtsyApiConfig): Promise<boolean> {
   const etsyListingUrl = `${etsyApiConfig.baseUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
