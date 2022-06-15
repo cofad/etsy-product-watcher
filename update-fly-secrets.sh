@@ -1,0 +1,2 @@
+# flyctl secrets unset --detach GMAIL_PASSWORD ETSY_API_KEY
+flyctl secrets set GMAIL_PASSWORD=$GMAIL_PASSWORD ETSY_API_KEY=$ETSY_API_KEY
