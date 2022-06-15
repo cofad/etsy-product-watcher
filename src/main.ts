@@ -13,15 +13,14 @@ const etsyApiConfig: EtsyApiConfig = {
 
 console.log("Etsy Product Watcher started!");
 
+console.log("Sending test email");
+checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
+
+setIntervalAtHour(6, () => checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig));
+
 app(
   get("/", async () => (await isEtsyItemInStock(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig)).toString()),
 );
-
-setTimeout(() => {
-  setInterval(() => {
-    checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
-  }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
-}, getMillisTill(6));
 
 async function isEtsyItemInStock(id: string, etsyApiConfig: EtsyApiConfig): Promise<boolean> {
   const etsyListingUrl = `${etsyApiConfig.baseUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
@@ -70,4 +69,18 @@ async function checkStatusAndSendEmail(listingId: string, etsyApiConfig: EtsyApi
     console.log("Out of stock");
     return "Out of stock";
   }
+}
+
+function setIntervalAtHour(hour: number, callback: () => void): void {
+  const millsTillHour = getMillisTill(hour);
+  const currentTime = (new Date()).getTime();
+  const intervalTime = new Date(currentTime + millsTillHour);
+
+  console.log(`Interval set to starting repeating at ${intervalTime.toString()}`);
+
+  setTimeout(() => {
+    setInterval(() => {
+      callback();
+    }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
+  }, getMillisTill(hour));
 }
