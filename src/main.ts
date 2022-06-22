@@ -13,9 +13,6 @@ const etsyApiConfig: EtsyApiConfig = {
 
 console.log("Etsy Product Watcher started!");
 
-console.log("Sending test email");
-checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig);
-
 setIntervalAtHour(6, () => checkStatusAndSendEmail(GOBLIN_POTTERY_CROCK_LISTING_ID, etsyApiConfig));
 
 app(
