@@ -1,6 +1,6 @@
 export interface EtsyApiConfig {
   baseUrl: string;
-  apiKey: string | undefined;
+  apiKey: string;
 }
 
 export enum EtsyListingState {
