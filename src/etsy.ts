@@ -5,7 +5,9 @@ export async function isEtsyItemInStock(id: string, etsyApiConfig: EtsyApiConfig
   const etsyListingUrl = `${etsyApiConfig.baseUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
   const response = await fetch(etsyListingUrl);
   const json = await response.json();
-  return json.results[0].state === EtsyListingState.ACTIVE;
+  const isEtsyItemInStock = json.results[0].state === EtsyListingState.ACTIVE;
+  console.log("Is Etsy item in stock: " + isEtsyItemInStock);
+  return isEtsyItemInStock;
 }
 
 export async function checkStatusAndSendEmail(
