@@ -25,7 +25,7 @@ export function setIntervalAtHour(hour: number, callback: () => void): void {
   const currentTime = (new Date()).getTime();
   const intervalTime = new Date(currentTime + millsTillHour);
 
-  console.log(`Interval set to starting repeating at ${intervalTime.toString()}`);
+  console.log(`Interval set to start repeating at ${intervalTime.toString()}`);
 
   setTimeout(() => {
     setInterval(() => {
