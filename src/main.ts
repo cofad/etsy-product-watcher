@@ -1,7 +1,7 @@
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 import { app, get } from "https://denopkg.com/syumai/dinatra@master/mod.ts";
 import { EtsyApiConfig, EtsyListingState } from "./etsy.model.ts";
-import { getMillisTill, TIME_CONSTANTS } from "./time.ts";
+import { setIntervalAtHour } from "./time.ts";
 
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 const GOBLIN_POTTERY_CROCK_LISTING_ID = "1177156178";
@@ -69,18 +69,4 @@ async function checkStatusAndSendEmail(listingId: string, etsyApiConfig: EtsyApi
     console.log("Out of stock");
     return "Out of stock";
   }
-}
-
-function setIntervalAtHour(hour: number, callback: () => void): void {
-  const millsTillHour = getMillisTill(hour);
-  const currentTime = (new Date()).getTime();
-  const intervalTime = new Date(currentTime + millsTillHour);
-
-  console.log(`Interval set to starting repeating at ${intervalTime.toString()}`);
-
-  setTimeout(() => {
-    setInterval(() => {
-      callback();
-    }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
-  }, getMillisTill(hour));
 }

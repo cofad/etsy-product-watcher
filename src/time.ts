@@ -1,10 +1,10 @@
 import { DeepReadonly } from "./deep-readonly.model.ts";
 
-export const TIME_CONSTANTS: DeepReadonly<{[key: string]: number}> = {
+const TIME_CONSTANTS: DeepReadonly<{ [key: string]: number }> = {
   NUM_MILLIS_PER_DAY: 1000 * 60 * 60 * 24,
 };
 
-export function getMillisTill(hour: number) {
+function getMillisTill(hour: number) {
   const numMillisPerDay = TIME_CONSTANTS.NUM_MILLIS_PER_DAY;
 
   const now = new Date();
@@ -18,4 +18,18 @@ export function getMillisTill(hour: number) {
   }
 
   return millisTill;
+}
+
+export function setIntervalAtHour(hour: number, callback: () => void): void {
+  const millsTillHour = getMillisTill(hour);
+  const currentTime = (new Date()).getTime();
+  const intervalTime = new Date(currentTime + millsTillHour);
+
+  console.log(`Interval set to starting repeating at ${intervalTime.toString()}`);
+
+  setTimeout(() => {
+    setInterval(() => {
+      callback();
+    }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
+  }, getMillisTill(hour));
 }
