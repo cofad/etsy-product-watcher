@@ -1,8 +1,17 @@
 import { EmailCredentials, sendEmail } from "./email.ts";
-import { EtsyApiConfig, EtsyListingState } from "./etsy.model.ts";
+import { getEnvOrThrow } from "./env.ts";
+import { EtsyApiConfig, EtsyListingState, EtsyUrlData } from "./etsy.model.ts";
+
+const ETSY_URL_DATA: EtsyUrlData = {
+  baseWebUrl: "https://www.etsy.com",
+  baseApiUrl: "https://openapi.etsy.com/v2/",
+  endPoints: {
+    listing: "listing",
+  },
+};
 
 export async function isEtsyItemInStock(id: string, etsyApiConfig: EtsyApiConfig): Promise<boolean> {
-  const etsyListingUrl = `${etsyApiConfig.baseUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
+  const etsyListingUrl = `${etsyApiConfig.baseApiUrl}/listings/${id}?api_key=${etsyApiConfig.apiKey}`;
   const response = await fetch(etsyListingUrl);
   const json = await response.json();
   const isEtsyItemInStock = json.results[0].state === EtsyListingState.ACTIVE;
@@ -19,7 +28,7 @@ export async function checkStatusAndSendEmail(
     await sendEmail(
       credentials,
       "In Stock",
-      `Item is in stock! <a href=${URL}>1 Gal. White Crock</a>`,
+      `Item is in stock! <a href=${buildEtsyUrl(listingId)}>1 Gal. White Crock</a>`,
     );
 
     console.log("In stock");
@@ -34,4 +43,15 @@ export async function checkStatusAndSendEmail(
     console.log("Out of stock");
     return "Out of stock";
   }
+}
+
+export function buildEtsyApiConfig(): Readonly<EtsyApiConfig> {
+  return {
+    baseApiUrl: ETSY_URL_DATA.baseApiUrl,
+    apiKey: getEnvOrThrow("ETSY_API_KEY"),
+  };
+}
+
+function buildEtsyUrl(listingId: string): string {
+  return ETSY_URL_DATA.baseWebUrl + "/" + ETSY_URL_DATA.endPoints.listing + "/" + listingId;
 }

@@ -1,9 +1,9 @@
 export interface EtsyApiConfig {
-  baseUrl: string;
-  apiKey: string;
+  readonly baseApiUrl: string;
+  readonly apiKey: string;
 }
 
-export enum EtsyListingState {
+export const enum EtsyListingState {
   ACTIVE = "active",
   REMOVED = "removed",
   SOLD_OUT = "sold_out",
@@ -17,12 +17,20 @@ export enum EtsyListingState {
 }
 
 export interface EtsyListing {
-  state: EtsyListingState;
+  readonly state: Readonly<EtsyListingState>;
 }
 
 export interface EtsyApiResponse<T> {
-  count: number;
-  results: T[];
-  params: { [key: string]: string };
-  type: string;
+  readonly count: number;
+  readonly results: Readonly<T[]>;
+  readonly params: Readonly<{ [key: string]: string }>;
+  readonly type: string;
+}
+
+export interface EtsyUrlData {
+  readonly baseWebUrl: string;
+  readonly baseApiUrl: string;
+  readonly endPoints: Readonly<{
+    [key: string]: string;
+  }>;
 }

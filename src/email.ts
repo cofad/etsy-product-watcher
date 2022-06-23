@@ -1,8 +1,9 @@
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import { getEnvOrThrow } from "./env.ts";
 
 export type EmailCredentials = {
-  email: string;
-  password: string;
+  readonly email: string;
+  readonly password: string;
 };
 
 export async function sendEmail(
@@ -16,7 +17,7 @@ export async function sendEmail(
     hostname: "smtp.gmail.com",
     port: 465,
     username: credentials.email,
-    password: credentials.password
+    password: credentials.password,
   });
 
   await client.send({
@@ -26,4 +27,11 @@ export async function sendEmail(
     content: "",
     html,
   });
+}
+
+export function buildEmailCredentials(): EmailCredentials {
+  return {
+    email: "etsy.product.watcher@gmail.com",
+    password: getEnvOrThrow("GMAIL_PASSWORD"),
+  };
 }
