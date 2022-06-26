@@ -24,7 +24,7 @@ COPY . .
 ENTRYPOINT ["/bin/deno"]
 CMD [ \
   "run", \
-  "--allow-env=:8080,GMAIL_PASSWORD,ETSY_API_KEY", \
-  "--allow-net=smtp.gmail.com:465,openapi.etsy.com", \
+  "--allow-env=,GMAIL_PASSWORD,ETSY_API_KEY", \
+  "--allow-net=:8080,smtp.gmail.com:465,openapi.etsy.com", \
   "./src/main.ts" \
   ]
