@@ -1,4 +1,4 @@
-ARG DENO_VERSION=1.14.0
+ARG DENO_VERSION=1.23.0
 ARG BIN_IMAGE=denoland/deno:bin-${DENO_VERSION}
 FROM ${BIN_IMAGE} AS bin
 
@@ -22,4 +22,9 @@ WORKDIR /deno-dir
 COPY . .
 
 ENTRYPOINT ["/bin/deno"]
-CMD ["run", "--allow-env", "--allow-net", "./src/main.ts"]
+CMD [ \
+  "run", \
+  "--allow-env=GMAIL_PASSWORD,ETSY_API_KEY", \
+  "--allow-net=smtp.gmail.com:465,openapi.etsy.com", \
+  "./src/main.ts" \
+  ]

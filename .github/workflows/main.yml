@@ -6,11 +6,31 @@ on:
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+
+      - name: Check formatting
+        run: deno fmt --check
+
+      - name: Lint
+        run: deno lint
+
+      - name: Typecheck
+        run: deno check main.js
   deploy:
       name: Deploy app
       runs-on: ubuntu-latest
       steps:
+        - name: Clone repo
         - uses: actions/checkout@v2
+        
+        - name: Deploy to fly.io 
         - uses: superfly/flyctl-actions/setup-flyctl@master
         # - run: flyctl secrets unset GMAIL_PASSWORD
         # - run: flyctl secrets set GMAIL_PASSWORD=${{ secrets.GMAIL_PASSWORD }}
