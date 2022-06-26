@@ -24,7 +24,7 @@ jobs:
         run: deno lint
 
       - name: Typecheck
-        run: deno check main.js
+        run: deno check ./src/main.js
   deploy:
       name: Deploy app
       runs-on: ubuntu-latest
