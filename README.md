@@ -1,7 +1,6 @@
 # Product Watcher
 
-A program that will check for products and send an email if a specific product
-is available.
+A program that will check for products and send an email if a specific product is available.
 
 ## Run
 
