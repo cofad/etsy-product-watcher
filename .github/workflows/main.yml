@@ -29,10 +29,10 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Clone repo
-        - uses: actions/checkout@v2
+          uses: actions/checkout@v2
         
         - name: Deploy to fly.io 
-        - uses: superfly/flyctl-actions/setup-flyctl@master
+          uses: superfly/flyctl-actions/setup-flyctl@master
         # - run: flyctl secrets unset GMAIL_PASSWORD
         # - run: flyctl secrets set GMAIL_PASSWORD=${{ secrets.GMAIL_PASSWORD }}
         # - run: flyctl secrets set ETSY_API_KEY=${{ secrets.ETSY_API_KEY }}
