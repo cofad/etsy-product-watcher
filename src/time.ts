@@ -28,6 +28,8 @@ export function setIntervalAtHour(hour: number, callback: () => void): void {
   console.log(`Interval set to start repeating at ${intervalTime.toString()}`);
 
   setTimeout(() => {
+    callback();
+
     setInterval(() => {
       callback();
     }, TIME_CONSTANTS.NUM_MILLIS_PER_DAY);
